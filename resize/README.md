@@ -25,9 +25,11 @@ Prerequisites: [Node.js](https://nodejs.org/en/) and [AWS CLI](http://docs.aws.a
 * Build:
   * `npm run build`
 * Upload package to S3, transform the CloudFormation template:
-  * `npm run package`
+  * Unix: `npm run package`
+  * Windows: `aws cloudformation package --template-file template.yml --output-template-file packaged-template.yml --s3-bucket $CODE_BUCKET`
 * Deploy to CloudFormation:
-  * `npm run deploy`
+  * Unix: `npm run deploy`
+  * Windows: `aws cloudformation deploy --template-file packaged-template.yml --capabilities CAPABILITY_IAM --stack-name dev-resize-project --parameter-overrides sourceBucket=$SOURCE_BUCKET destBucket=$DEST_BUCKET maxDimension=$MAX_DIMENSION`
 
 ## Deploy from the AWS Serverless Application Repository
 * Create the destination bucket

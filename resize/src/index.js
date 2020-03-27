@@ -88,6 +88,11 @@ function put(destBucket, destKey, data) {
 
 async function resize(inBuffer) {
   const image = await jimp.read(inBuffer);
-  image.scaleToFit(maxDimension, maxDimension);
+  if(image.getHeight() > image.getWidth()){
+    image.resize(jimp.AUTO, image.getHeight());
+  } else{
+    image.resize(image.getWidth() ,jimp.AUTO);
+  }
+
   return image.getBufferAsync(jimp.MIME_JPEG);
 }

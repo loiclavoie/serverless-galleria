@@ -4,9 +4,9 @@
   "description": "Copy and crop images using Lambda",
   "main": "src/index.js",
   "scripts": {
-    "build": "node_modules/gulp/bin/gulp.js",
+    "build": "node ./node_modules/gulp/bin/gulp.js",
     "package": "aws cloudformation package --template-file template.yml --output-template-file packaged-template.yml --s3-bucket $CODE_BUCKET",
-    "deploy": "aws cloudformation deploy --template-file packaged-template.yml --capabilities CAPABILITY_IAM --stack-name dev-crop-$USER --parameter-overrides sourceBucket=$SOURCE_BUCKET destBucket=$DEST_BUCKET width=$WIDTH height=$HEIGHT xCoordinate=$X yCoordinate=$Y"
+    "deploy": "aws cloudformation deploy --template-file packaged-template.yml --capabilities CAPABILITY_IAM --stack-name dev-crop-$USER --parameter-overrides sourceBucket=$SOURCE_BUCKET destBucket=$DEST_BUCKET mode=CENTERED width=$WIDTH height=$HEIGHT xCoordinate=$X yCoordinate=$Y"
   },
   "repository": {
     "type": "git",

@@ -7,11 +7,18 @@ const width = parseInt(process.env.WIDTH);
 const height = parseInt(process.env.HEIGHT);
 let x = parseInt(process.env.X_COORDINATE);
 let y = parseInt(process.env.Y_COORDINATE);
+let mode = process.env.mode || 'NORMAL';
 
 exports.handler = function main(event, context) {
   // If x or y are missing, set to zero
-  if (!x) { x = 0; }
-  if (!y) { y = 0; }
+  if(mode.toUpperCase() !== 'CENTERED') {
+    if (!x) {
+      x = 0;
+    }
+    if (!y) {
+      y = 0;
+    }
+  }
 
   // Fail on mising data
   if (!destBucket || !width || !height) {
@@ -42,8 +49,19 @@ function conversionPromise(record, destBucket) {
 
     // Modify destKey if an alternate copy location is preferred
     const destKey = srcKey;
-    const paramString = JSON.stringify({ width, height, x, y });
-    const conversion = 'cropping ' + paramString + ': ' + srcBucket + ':' + srcKey + ' to ' + destBucket + ':' + destKey;
+
+    var content;
+    if(mode.toUpperCase() === 'CENTERED'){
+      content = JSON.stringify([ width, height, 'CENTERED' ]);
+    } else {
+      content = JSON.stringify({ width, height, x, y });
+    }
+    const conversion = 'cropping ' +
+        content + ': ' +
+        srcBucket + ':' +
+        srcKey + ' to ' +
+        destBucket + ':' +
+        destKey;
 
     console.log('Attempting: ' + conversion);
 
@@ -96,6 +114,11 @@ function put(destBucket, destKey, data) {
 
 async function crop(inBuffer) {
   const image = await jimp.read(inBuffer);
+  if(mode.toUpperCase() === 'CENTERED'){
+    x = (image.getWidth()/2) - (width/2);
+    y = (image.getHeight()/2) - (height/2);
+  }
+
   image.crop(x, y, width, height);
   return image.getBufferAsync(jimp.MIME_JPEG);
 }

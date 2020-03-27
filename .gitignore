@@ -59,3 +59,9 @@ typings/
 
 # CloudFormation packaged templates
 packaged-template.yml
+
+# Editor
+.idea
+
+# Build
+*/build
